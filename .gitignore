@@ -1,0 +1,32 @@
+/no subir/
+/no_subir/
+
+# Entorno virtual de Python
+.venv/
+venv/
+env/
+
+# Carpeta privada/no subir
+no_subir/
+no subir/
+
+# Archivos del sistema
+.DS_Store
+__pycache__/
+*.pyc
+
+# Entornos virtuales
+.venv_pycaret/
+.venv/
+venv/
+env/
+
+# Carpetas que no se suben
+no_subir/
+no subir/
+
+# Cachés de Python y sistema
+__pycache__/
+*.pyc
+.DS_Store
+modelos generados/

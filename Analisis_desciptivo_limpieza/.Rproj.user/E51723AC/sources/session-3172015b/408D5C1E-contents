@@ -1,0 +1,63 @@
+###########---------------------------------------#############################.
+###########------ GRÁFICO GÉNERO VS DEMANDA -------#############################.
+###########---------------------------------------#############################.
+
+library(ggplot2)
+
+# Tabla género x demanda
+tabla_genero_demanda <- table(
+  base_pred$genre_macro_12,
+  base_pred$nivel_demanda_digital
+)
+
+# Porcentajes dentro de cada macro-género
+datos_plot <- as.data.frame(
+  prop.table(tabla_genero_demanda, margin = 1) * 100
+)
+
+names(datos_plot) <- c(
+  "genre_macro_12",
+  "nivel_demanda_digital",
+  "porcentaje"
+)
+
+# Asegurar nombres limpios
+datos_plot$nivel_demanda_digital <- trimws(as.character(datos_plot$nivel_demanda_digital))
+
+# Asegurar orden de la demanda
+datos_plot$nivel_demanda_digital <- factor(
+  datos_plot$nivel_demanda_digital,
+  levels = c("demanda_baja", "demanda_media", "demanda_alta")
+)
+
+# Asegurar que el género es factor
+datos_plot$genre_macro_12 <- factor(datos_plot$genre_macro_12)
+
+# Gráfico
+ggplot(datos_plot, aes(
+  x = genre_macro_12,
+  y = porcentaje,
+  fill = nivel_demanda_digital
+)) +
+  geom_col(color = "white") +
+  coord_flip() +
+  scale_fill_manual(
+    values = c(
+      "demanda_baja" = "lightyellow",
+      "demanda_media" = "lightblue",
+      "demanda_alta" = "plum"
+    ),
+    labels = c(
+      "Demanda baja",
+      "Demanda media",
+      "Demanda alta"
+    )
+  ) +
+  labs(
+    title = "Distribución de demanda digital por macro-género",
+    subtitle = "V de Cramer = 0.234",
+    x = "Macro-género",
+    y = "% dentro de cada género",
+    fill = "Demanda digital"
+  ) +
+  theme_minimal()

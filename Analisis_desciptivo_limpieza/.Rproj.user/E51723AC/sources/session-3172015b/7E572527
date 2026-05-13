@@ -1,0 +1,27 @@
+{
+    "id": "7E572527",
+    "path": "~/Desktop/proyectos/ML - índice de demanda digital./Analisis_desciptivo_limpieza/AD_predictoras_ tras_ollama.R",
+    "project_path": "AD_predictoras_ tras_ollama.R",
+    "type": "r_source",
+    "hash": "528780816",
+    "contents": "",
+    "dirty": false,
+    "created": 1778344274585.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "253,10",
+        "scrollLine": "243"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1778673970,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1778673970701,
+    "read_only": false,
+    "read_only_alternatives": []
+}
