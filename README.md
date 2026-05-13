@@ -90,7 +90,7 @@ La variable `genres` presentaba una elevada dispersión debido a la gran cantida
 
 El resultado fue una clasificación de los géneros en 12 macro-géneros más interpretables.
 
-![Distribución de demanda digital por género](<Analisis_desceptivo_limpieza/outputs_R/Distribución de demanda digital por género.png>)
+![Distribución de demanda digital por género](<Gráficas/Distribución de demanda digital por genero.png>)
 
 ---
 
@@ -115,7 +115,7 @@ El problema se aborda como una tarea de **clasificación multiclase**, donde la 
 
 ### Curva ROC: Random Forest
 
-![ROC Random Forest](roc_random_forest.png)
+![ROC Random Forest](<Gráficas/roc_random_forest.png>)
 
 ### Comparación de métricas: SVM
 
@@ -123,7 +123,7 @@ El problema se aborda como una tarea de **clasificación multiclase**, donde la 
 
 ### Curva ROC: SVM
 
-![ROC SVM](roc_svm.png)
+![ROC SVM](<Gráficas/roc_svm.png>)
 
 Estos resultados muestras rendimientos similares.
 
@@ -145,5 +145,4 @@ Las matrices de confusión permiten observar en qué clases de demanda digital s
 
 El modelo Random Forest permite estimar la importancia relativa de las variables predictoras. Los resultados se encuentran en:
 
-```text
-importancia_variables_random_forest.csv
+![Importancia de variables Random Forest](<Gráficas/importancia_variables_random_forest.png>)
