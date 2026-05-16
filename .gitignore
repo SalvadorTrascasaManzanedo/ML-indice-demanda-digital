@@ -40,3 +40,4 @@ no_subir/
 .venv/
 __pycache__/
 .DS_Store
+.Rproj.user/
