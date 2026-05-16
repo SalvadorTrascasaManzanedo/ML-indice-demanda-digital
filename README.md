@@ -1,8 +1,8 @@
 # ML - Índice de Demanda Digital
 
-Proyecto para la asignatura de aprendizaje automático supervisado orientado a predecir el nivel de demanda digital de artistas de Spotify a partir de variables musicales, trayectoria discográfica y métricas de actividad.
+Proyecto de aprendizaje automático supervisado orientado a predecir el **nivel de demanda digital de artistas de Spotify** a partir de variables sobre trayectoria discográfica, actividad reciente y macro-género musical.
 
-El objetivo principal es clasificar artistas en distintos niveles de demanda digital mediante modelos supervisados, comparando su rendimiento y analizando la importancia de las variables predictoras.
+El objetivo principal es desarrollar un modelo de clasificación multiclase que permita distinguir entre artistas de **demanda baja**, **demanda media** y **demanda alta**.
 
 ---
 
@@ -14,13 +14,13 @@ Este proyecto desarrolla un flujo completo de modelado supervisado aplicado a da
 - Número de seguidores.
 - Oyentes mensuales.
 
-A partir de este índice, los artistas se clasifican en tres niveles:
+A partir de este índice, los artistas se clasificaron en tres niveles:
 
 - `demanda_baja`
 - `demanda_media`
 - `demanda_alta`
 
-Posteriormente, se entrenan y comparan distintos modelos de clasificación para predecir dicho nivel de demanda digital.
+Como predictoras se utilizaron variables asociadas al perfil musical del artista, su trayectoria, actividad reciente, volumen de lanzamientos y macro-género musical.
 
 ---
 
@@ -28,37 +28,25 @@ Posteriormente, se entrenan y comparan distintos modelos de clasificación para 
 
 La base de datos procede de la combinación de dos datasets publicados en Kaggle por Sarah Jeffreson:
 
-- **Featured Spotify artists/tracks with metadata**:https://www.kaggle.com/datasets/sarahjeffreson/featured-spotify-artiststracks-with-metadata
-- **Large random Spotify artist sample with metadata**: https://www.kaggle.com/datasets/sarahjeffreson/large-random-spotify-artist-sample-with-metadata
+- **Featured Spotify artists/tracks with metadata**:  
+  https://www.kaggle.com/datasets/sarahjeffreson/featured-spotify-artiststracks-with-metadata
 
-La combinación de ambas fuentes permite trabajar con una muestra más amplia y con mayor representación de artistas de distintos niveles de popularidad.
+- **Large random Spotify artist sample with metadata**:  
+  https://www.kaggle.com/datasets/sarahjeffreson/large-random-spotify-artist-sample-with-metadata
 
-Las variables originales incluyen, entre otras:
-
-| Variable | Descripción |
-|---|---|
-| `ids` | Identificador único del artista en Spotify |
-| `names` | Nombre artístico |
-| `monthly_listeners` | Oyentes mensuales |
-| `popularity` | Popularidad según Spotify |
-| `followers` | Número de seguidores |
-| `genres` | Géneros musicales asociados |
-| `first_release` | Año del primer lanzamiento |
-| `last_release` | Año del último lanzamiento |
-| `num_releases` | Número de lanzamientos |
-| `num_tracks` | Número de canciones |
+La combinación de ambas fuentes permitió trabajar con una muestra amplia y con mayor representación de artistas de distintos niveles de popularidad.
 
 ---
 
 ## 3. Construcción del Índice de Demanda Digital
 
-El **Índice de Demanda Digital (IDD)** se construyó a partir de las variables:
+El **Índice de Demanda Digital (IDD)** se construyó a partir de:
 
 - `popularity`
 - `followers`
 - `monthly_listeners`
 
-Dado que `followers` y `monthly_listeners` presentaban una fuerte asimetría positiva, se aplicó una transformación logarítmica antes de estandarizar las variables. Posteriormente, se combinó la información para generar un índice continuo de demanda digital.
+Dado que `followers` y `monthly_listeners` presentaban una fuerte asimetría positiva, se aplicó una transformación logarítmica antes de estandarizar las variables. Posteriormente, los tres indicadores se combinaron para generar un índice continuo.
 
 El índice fue recodificado en tres clases:
 
@@ -66,83 +54,121 @@ El índice fue recodificado en tres clases:
 - **Demanda alta**: artistas por encima del percentil 85 del IDD y con popularidad igual o superior a 60.
 - **Demanda media**: casos intermedios.
 
-Esta decisión introduce una clasificación más interpretable, aunque también genera un problema relevante de **desbalanceo entre clases**, especialmente por la menor representación de artistas de demanda alta.
+Esta construcción hizo interpretable la variable criterio, aunque generó un problema relevante de **desbalance entre clases**, especialmente por la menor representación de artistas de demanda alta.
 
 ---
 
-## 4. Preprocesamiento
+## 4. Preprocesamiento y análisis descriptivo
 
 El preprocesamiento incluyó:
 
 - Eliminación de duplicados.
 - Tratamiento de valores perdidos.
 - Revisión de valores implausibles.
-- Transformación logarítmica de variables altamente asimétricas.
-- Estandarización de variables numéricas.
+- Transformación logarítmica de variables asimétricas.
 - Construcción de variables derivadas de trayectoria musical.
 - Agrupación de géneros musicales en macro-géneros.
+- Preparación de una base final ligera para modelado.
 
-### Agrupación de géneros
+La variable `genres` presentaba una gran dispersión por la cantidad de etiquetas musicales específicas. Para hacerla operativa, se aplicó un procedimiento semiautomatizado con embeddings semánticos mediante **Ollama** y el modelo `bge-m3`, agrupando los géneros en 12 macro-géneros.
 
-### Agrupación de géneros
-
-La variable `genres` presentaba una elevada dispersión debido a la gran cantidad de etiquetas musicales específicas. Para hacerla operativa en el modelado, se aplicó un procedimiento semiautomatizado basado en embeddings semánticos mediante **Ollama** y el modelo `bge-m3`.
-
-El resultado fue una clasificación de los géneros en 12 macro-géneros más interpretables.
+### Distribución de demanda digital por macro-género
 
 ![Distribución de demanda digital por género](<Gráficas/Distribución de demanda digital por genero.png>)
 
----
+### Distribución de predictoras por clase
 
-## 5. Modelos entrenados
+![Predictoras por clase](<Gráficas/Predictoras por clase.png>)
 
-En el proyecto se entrenaron y compararon distintos modelos de clasificación supervisada:
-
-- Support Vector Machine, SVM.
-- Random Forest.
-- Modelos exploratorios mediante PyCaret.
-- Modelos con balanceo de clases.
-
-El problema se aborda como una tarea de **clasificación multiclase**, donde la variable objetivo es el nivel de demanda digital.
+El análisis descriptivo mostró que las predictoras presentan distribuciones heterogéneas, valores extremos y concentración en determinados rangos. Las variables más relacionadas con el nivel de demanda fueron el **número de lanzamientos** y los **años desde el último lanzamiento**, mientras que el macro-género aportó información complementaria.
 
 ---
 
-## 6. Resultados
+## 5. Desarrollo del modelo
 
-### Comparación de métricas: Random Forest
+De forma exploratoria, se empleó PyCaret para identificar algoritmos prometedores. Posteriormente, se desarrolló un modelo de **Random Forest**, seleccionado por su buen rendimiento preliminar y por su adecuación a variables mixtas, relaciones no lineales y distribuciones no normales.
 
-![Comparación de métricas Random Forest](comparacion_metricas_random_forest.png)
+El conjunto de datos se dividió en entrenamiento y prueba con una proporción **70/30**, manteniendo la proporción de clases mediante partición estratificada.
 
-### Curva ROC: Random Forest
+El preprocesamiento del modelo incluyó:
+
+- Variables numéricas sin estandarizar, ya que Random Forest no requiere escalado.
+- Codificación *one-hot* del macro-género musical.
+- Integración del preprocesamiento y el modelo dentro de un `Pipeline`.
+
+El ajuste del modelo se realizó mediante **GridSearchCV** con **validación cruzada estratificada de 5 particiones**, seleccionando la mejor configuración según **precisión balanceada**. Esta métrica se utilizó por el desbalance de clases detectado en la variable criterio.
+
+La configuración final seleccionada fue:
+
+- `n_estimators = 500`
+- `max_depth = 10`
+- `min_samples_leaf = 5`
+- `max_features = sqrt`
+- `class_weight = balanced`
+
+La mejor precisión balanceada media en validación cruzada fue de **0.638**.
+
+---
+
+## 6. Resultados del Random Forest
+
+En el conjunto de prueba, el modelo obtuvo un rendimiento moderado:
+
+| Métrica | Valor |
+|---|---:|
+| Accuracy | 0.627 |
+| Balanced accuracy | 0.634 |
+| F1 macro | 0.559 |
+| AUC macro OvR | 0.821 |
+
+### Comparación de métricas
+
+![Comparación de métricas Random Forest](<Gráficas/comparacion_metricas_random_forest.png>)
+
+### Curvas ROC
 
 ![ROC Random Forest](<Gráficas/roc_random_forest.png>)
 
-### Comparación de métricas: SVM
-
-![Comparación de métricas SVM](comparacion_metricas_svm.png)
-
-### Curva ROC: SVM
-
-![ROC SVM](<Gráficas/roc_svm.png>)
-
-Estos resultados muestras rendimientos similares.
+El modelo discriminó mejor los extremos de demanda: demanda baja y demanda alta. La clase de demanda media fue la más difícil de separar.
 
 ---
 
-### Matrices de confusión
-
-Las matrices de confusión permiten observar en qué clases de demanda digital se concentran los aciertos y los errores de clasificación.
-
-#### Matriz de confusión: Random Forest
+## 7. Matriz de confusión
 
 ![Matriz de confusión Random Forest](<Gráficas/matriz_confusion_random_forest.png>)
 
-#### Matriz de confusión: SVM
+La clase mejor clasificada fue la **demanda baja**, con 2626 aciertos de 3331 casos. La **demanda alta** presentó un recall elevado, detectando 403 de 581 casos reales, aunque con baja precisión por la presencia de falsos positivos. La mayor dificultad apareció en la **demanda media**, que se confundió tanto con demanda baja como con demanda alta.
 
-![Matriz de confusión SVM](<Gráficas/matriz_confusion_svm.png>)
+---
 
-## 7. Importancia de variables
-
-El modelo Random Forest permite estimar la importancia relativa de las variables predictoras. Los resultados se encuentran en:
+## 8. Importancia de variables
 
 ![Importancia de variables Random Forest](<Gráficas/importancia_variables_random_forest.png>)
+
+La importancia de variables mostró que el **número de lanzamientos** fue la predictora más influyente del modelo. Le siguieron los **años desde el último lanzamiento**, la **duración de la carrera** y el **tamaño del último lanzamiento**. Los macro-géneros tuvieron una contribución individual menor, aunque aportaron información complementaria al modelo.
+
+---
+
+## 9. Archivos principales del repositorio
+
+| Archivo | Descripción |
+|---|---|
+| `01_generar_embeddings.py` | Generación de embeddings semánticos de géneros |
+| `03_clusterizar_generos.py` | Agrupación de géneros mediante clustering |
+| `04_interpretar_clusters.py` | Interpretación de clusters de género |
+| `05_crear_genero_macro_12.py` | Creación de la variable de macro-género |
+| `06_analisis_preliminar_pycaret.py` | Comparación exploratoria de modelos con PyCaret |
+| `07_random_forest.py` | Entrenamiento, ajuste y evaluación del Random Forest |
+| `base_modelado_limpia.csv` | Base final utilizada para el modelado |
+| `comparacion_modelos_pycaret.csv` | Resultados exploratorios de PyCaret |
+| `importancia_variables_random_forest.csv` | Importancia de variables del modelo final |
+
+---
+
+## 10. Limitaciones
+
+La variable criterio se construyó artificialmente a partir de métricas de Spotify, por lo que depende de decisiones de corte específicas y de la confiabilidad de la métrica de popularidad. Además, la clase de demanda alta está poco representada, lo que dificulta su clasificación precisa.
+
+También pueden existir sesgos derivados de la combinación de datasets con procedimientos de muestreo distintos y de la recodificación semiautomatizada del género musical mediante Ollama.
+
+Para mejorar el rendimiento sería necesario enriquecer tanto la variable criterio como las predictoras con información adicional procedente de otras fuentes, como métricas de consumo, visibilidad e interacción en Spotify, YouTube, Last.fm, MusicBrainz, Instagram o TikTok.
